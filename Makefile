@@ -6,7 +6,7 @@
 #    By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/25 13:56:27 by mboy              #+#    #+#              #
-#    Updated: 2021/10/08 23:07:41 by alabalet         ###   ########.fr        #
+#    Updated: 2021/10/09 00:08:23 by alabalet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,10 @@ CFLAGS	=	-Wall -Werror -Wextra -I ./Includes -I ~/.brew/opt/readline/include -g
 
 SDIR	=	Sources
 
-SRCS_C	=	exec.c
+SRCS_C	=	exec.c\
+			utils1.c\
+			error.c\
+			redir.c
 
 SRCS	=	$(patsubst %, $(SDIR)/%, $(SRCS_C))
 
