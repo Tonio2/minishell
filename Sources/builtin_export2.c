@@ -48,12 +48,19 @@ char	**min_export(t_vars *v, char **min)
 	return (cur);
 }
 
+//ft_split personalisé
 char	**split_export(char *param)
 {
+	int		idx;
 	char	**tmp;
 	char	**split;
 
-	tmp = ft_split(param, '=');
+	idx = -1;
+	tmp = NULL;
+	if (join_export(NULL, param, 1) == 1)
+		tmp = ft_split(param, '+');
+	else
+		tmp = ft_split(param, '=');
 	split = malloc(sizeof(char *) * 3);
 	split[0] = ft_strdup(tmp[0]);
 	if (tmp[1] == 0)
@@ -67,6 +74,27 @@ char	**split_export(char *param)
 	return (split);
 }
 
+//Fonction qui va trier tab_env par ordre ASCII
+int	sort_export(t_vars *v)
+{
+	int		idx[2];
+	char	**min;
+
+	idx[0] = 0;
+	min = v->tab_env[idx[0]];
+	while (v->tab_env[++idx[0]])
+	{
+		if (ft_strcmp(min[0], v->tab_env[idx[0]][0]) > 0)
+			min = v->tab_env[idx[0]];
+	}
+	print_export(min);
+	idx[1] = -1;
+	while (++idx[1] < v->tab_len - 1)
+		min = min_export(v, min);
+	return (0);
+}
+
+//Gestion d'erreur
 int	error_export(char *param)
 {
 	if (param[0] == '-')

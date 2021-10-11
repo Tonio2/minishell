@@ -16,9 +16,41 @@
 //(fonction incomplète tant que le mise
 //en comment de nos parties n'a pas été faite)
 
+int	toolong_exit(const char *str, long long *nb)
+{
+	int					sign;
+	unsigned long long	num;
+
+	sign = 1;
+	num = 0;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	if (!*str)
+		return (0);
+	while (*str)
+	{
+		if (!ft_isdigit(*str))
+			return (0);
+		num = (num * 10) + (*str - 48);
+		if ((sign < 0 && num > ((unsigned long long)LLONG_MAX + 1))
+			|| (sign > 0 && num > LLONG_MAX))
+			return (0);
+		str++;
+	}
+	*nb = num * sign;
+	return (1);
+}
+
 int	error_exit(char **param)
 {
-	if (ft_str_isdigit(param[0]) == 0)
+	long long	ret;
+
+	ret = toolong_exit(param[0], &ret);
+	if (ret == 0 || ft_str_isdigit(param[0]) == 0)
 	{
 		ft_putstr_fd("exit\n", 2);
 		ft_putstr_fd("minishell: exit: ", 2);

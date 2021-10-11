@@ -12,40 +12,18 @@
 
 #include "minishell.h"
 
-//Fonction qui va trier tab_env par ordre ASCII
-int	sort_export(t_vars *v)
-{
-	int		idx[2];
-	char	**min;
-
-	idx[0] = 0;
-	min = v->tab_env[idx[0]];
-	while (v->tab_env[++idx[0]])
-	{
-		if (ft_strcmp(min[0], v->tab_env[idx[0]][0]) > 0)
-			min = v->tab_env[idx[0]];
-	}
-	print_export(min);
-	idx[1] = -1;
-	while (++idx[1] < v->tab_len - 1)
-		min = min_export(v, min);
-	return (0);
-}
-
 //Fonction qui va anayler si l'argument passer en paramètre
 //est valide ou non déterminer si la variable existe dèjà
 //dans notre env ou pas
 int	find_export(t_vars *v, char *param)
 {
 	int		idx;
-	int		ret;
 	char	**find;
 
-	ret = 0;
 	idx = -1;
 	if (param[0] == '=')
 		return (1);
-	find = ft_split(param, '=');
+	find = split_export(param);
 	if (!find || builtin_check(find[0]) == 1)
 	{
 		if (find)
@@ -55,10 +33,15 @@ int	find_export(t_vars *v, char *param)
 	while (v->tab_env[++idx])
 	{
 		if (ft_strcmp(v->tab_env[idx][0], find[0]) == 0)
-			ret = 3;
+		{
+			free_tabstr(find);
+			if (join_export(NULL, param, 1) == 1)
+				return (4);
+			return (3);
+		}
 	}
 	free_tabstr(find);
-	return (ret);
+	return (0);
 }
 
 //Fonction qui va venir ajouter une nouvelle variable si
@@ -120,6 +103,37 @@ int	update_export(t_vars *v, char *param)
 	return (0);
 }
 
+//Fonction qui va venir joindre deux chaine de caracteres 
+//dans le cas du +=
+int	join_export(t_vars *v, char *param, int select)
+{
+	int		idx;
+	char	*tmp;
+	char	**join;
+
+	idx = -1;
+	if (select == 1)
+	{
+		while (param[++idx])
+			if (param[idx] == '+' && param[idx + 1] == '=')
+				return (1);
+		return (0);
+	}
+	join = split_export(param);
+	while (v->tab_env[++idx])
+	{
+		if (ft_strcmp(v->tab_env[idx][0], join[0]) == 0)
+		{
+			tmp = ft_strjoin(v->tab_env[idx][1], join[1]);
+			free(v->tab_env[idx][1]);
+			v->tab_env[idx][1] = ft_strdup(tmp);
+			free(tmp);
+		}
+	}
+	free_tabstr(join);
+	return (0);
+}
+
 //Fonction pricipale du vin env//
 int	builtin_export(t_vars *v, char **param)
 {
@@ -136,7 +150,8 @@ int	builtin_export(t_vars *v, char **param)
 		if (ret == 1)
 			return (error_export(param[idx]));
 		else if ((ret == 3 && update_export(v, param[idx]) == 1)
-			|| ((ret == 0) && add_export(v, param[idx]) == 1))
+			|| (ret == 0 && add_export(v, param[idx]) == 1)
+			|| (ret == 4 && join_export(v, param[idx], 0) == 1))
 			return (1);
 	}
 	return (0);
