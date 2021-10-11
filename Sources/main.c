@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:14:35 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/11 02:35:34 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 02:48:12 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,10 @@ int	main(int ac, char **av, char **e)
 	}
 	return (g_sig.exit_code);
 }
+
+/*
+Main pour lancer le tester
+*/
 
 // int	main(int ac, char **av, char **e)
 // {
