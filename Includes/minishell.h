@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 22:36:16 by alabalet          #+#    #+#             */
-/*   Updated: 2021/09/27 17:16:04 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 02:27:26 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ typedef struct s_token
 typedef struct s_cmd
 {
 	int		pipefd[2];
-	int		nb_token;
-	t_token	*token;
+	int		nb_redir;
+	t_token	*redir_tab;
 	int		ac;
 	char	**av;
 	char	**path;
@@ -66,6 +66,10 @@ typedef struct s_vars
 	int			tab_len;
 	char		***tab_env;
 	char		***tab_exp;
+	char		**e;
+	char		**word_tab;
+	int			nb_tkn;
+	t_token		*tkn_tab;
 }				t_vars;
 
 typedef struct s_process
@@ -73,13 +77,19 @@ typedef struct s_process
 	int		status;
 	int		exit_code;
 	pid_t	pid;
+	int		interrupt_hd;
 }		t_process;
 
 t_process	g_sig;
 
+void		expand(char **str, t_vars *v);
+void		parser(t_vars *v);
+int			tokenize(t_vars *v);
+int			exec(t_vars *v);
+void		sigint_handler(int code);
+void		sigquit_handler(int code);
 void		exit_error(char *str, int mode);
 t_token		*ft_tokenize(char **tab);
-void		ft_parser(t_vars *v, t_token *t_list);
 char		**get_cmd_path(t_vars *v, char *cmd);
 void		exec_cmds(t_vars *v);
 void		test(int code);
@@ -88,7 +98,7 @@ void		test2(int code);
 void		ft_print(t_vars *v);
 int			get_type(char *token);
 void		expanser(char **tab, t_vars *v);
-char		**lexer(char *str, t_vars *v);
+int			lexer(t_vars *v, char *line);
 int			check_syntax(char **tab);
 void		get_env(t_vars *v, char **env);
 void		buitlin_init(t_vars *v, char **env);
@@ -105,16 +115,16 @@ int			builtin_unset(t_vars *v, char **param);
 int			builtin_cd(t_vars *v, char **param);
 int			builtin_exit(t_vars *v, char **param);
 int			builtin_pwd(t_vars *v, char **param);
-int			builtin(t_vars *v, int n, int solo);
+int			builtin(t_vars *v, int n);
 void		echo_control_seq(int c);
-int			redir(t_token tkn, int solo);
+int			redir(t_token *tkn_tab);
 char		*get_tabenv(t_vars *v, char *key);
 void		init_vars(t_vars *v, char **e);
 char		*ft_readline(char *str);
 void		ft_readline2(int fd, char *del);
-int			clear(t_vars *v);
+void		clear(void);
 int			builtin_check(char *check);
-void		print_error(int mode, char *str);
+void		print_error(char *str, int mode);
 int			is_sep(char c);
 int			len_sep(char *str);
 void		exit_error(char *str, int mode);

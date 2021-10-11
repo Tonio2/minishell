@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:58:02 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/10 01:09:26 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 01:56:27 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	word_count(char *str)
 			}
 		}
 	}
-	return (wc - 1);
+	return (wc);
 }
 
 char	*parse_symbol(char *str, int *i)
@@ -75,7 +75,8 @@ char	*parse_word(char *str, int *i)
 
 	word = malloc(ft_strlen(str));
 	i_word = 0;
-	while (str[*i] && (q != 0 || is_symbol(str[*i])))
+	q = 0;
+	while (str[*i] && (q != 0 || !is_symbol(str[*i])))
 	{
 		if (str[*i] == '"' || str[*i] == '\'')
 			q = str[*i] * (q == 0) + q * (q != str[*i]);

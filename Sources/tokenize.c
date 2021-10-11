@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 21:38:22 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/10 01:31:30 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/10 19:03:47 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	heredoc(t_token *tkn, int i)
 	char	*filename;
 	char	*tmp;
 	char	*line;
+	int		fd;
 
 	tmp = ft_itoa(i);
 	filename = ft_strjoin(".tmp", tmp);
@@ -75,7 +76,7 @@ int	parse_redir(t_vars *v)
 
 	i = -1;
 	i_hd = 0;
-	while (v->tkn_tab[++i])
+	while (v->tkn_tab[++i].type)
 	{
 		if (v->tkn_tab[i].type == LLEFT)
 			heredoc(&(v->tkn_tab[i]), i_hd++);
@@ -84,7 +85,7 @@ int	parse_redir(t_vars *v)
 			expand(&(v->tkn_tab[i].str), v);
 			if (substract_quotes(&(v->tkn_tab[i].str)))
 			{
-				print_error("minishell: ambiguous redirect\n")
+				print_error("minishell: ambiguous redirect\n", 3);
 				return (1);
 			}
 		}
@@ -112,13 +113,16 @@ int	tokenize(t_vars *v)
 	int	i_word;
 	int	i_tkn;
 
-	v->tkn_tab = malloc((ft_tablen(v->word_tab) + 1) * sizeof(t_token));
 	i_tkn = 0;
+	i_word = -1;
+	while (v->word_tab[++i_word])
+		;
+	v->tkn_tab = malloc((i_word + 1) * sizeof(t_token));
 	i_word = 0;
 	while (v->word_tab[i_word])
 	{
-		v->tkn_tab[i_tkn] = get_type(v->word_tab[i_word]);
-		if (v->tkn_tab[i_tkn] == PIPE)
+		v->tkn_tab[i_tkn].type = get_type(v->word_tab[i_word]);
+		if (v->tkn_tab[i_tkn].type == PIPE)
 			v->tkn_tab[i_tkn].str = 0;
 		else if (1 <= v->tkn_tab[i_tkn].type && v->tkn_tab[i_tkn].type <= 4)
 			v->tkn_tab[i_tkn].str = ft_strdup(v->word_tab[++i_word]);

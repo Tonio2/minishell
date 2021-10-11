@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 23:08:08 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/10 00:59:17 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/10 18:38:45 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*get_substr(char *str, int *i, t_vars *v)
 		i_key++;
 	}
 	key[i_key] = 0;
-	*i += cpt - 1;
+	*i += i_key - 1;
 	value = get_tabenv(v, key);
 	free(key);
 	return (value);
@@ -58,7 +58,6 @@ void	str_replace(char **str, char *substr, int i1, int *i)
 	ret[i_ret + 1] = 0;
 	free(*str);
 	*str = ret;
-	return (ret);
 }
 
 /*
@@ -79,9 +78,9 @@ void	expand(char **str, t_vars *v)
 	q = 0;
 	while ((*str)[++i])
 	{
-		if ((*str)[i[0]] == '\'' || (*str)[i[0]] == '"')
-			q = (*str)[i[0]] * (q == 0) + q * (q != (*str)[i[0]]);
-		if (q != '\'' && (*str)[i[0]] == '$' && is_posix((*str)[i[0] + 1]))
+		if ((*str)[i] == '\'' || (*str)[i] == '"')
+			q = (*str)[i] * (q == 0) + q * (q != (*str)[i]);
+		if (q != '\'' && (*str)[i] == '$' && is_posix((*str)[i + 1]))
 		{
 			i1 = i++;
 			if ((*str)[i] == '?')

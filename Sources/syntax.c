@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer2.c                                           :+:      :+:    :+:   */
+/*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 19:57:19 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/09 21:48:34 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/10 19:00:47 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	check_syntax_loop(char **tab, t_token tkn, int cpt)
 	{
 		if (get_type(tab[cpt + 1]) == PIPE)
 		{
-			print_error(5, tab[cpt + 1]);
+			print_error(tab[cpt + 1], 5);
 			return (258);
 		}
 	}
@@ -26,7 +26,7 @@ int	check_syntax_loop(char **tab, t_token tkn, int cpt)
 	{
 		if (get_type(tab[cpt + 1]) != TXT)
 		{
-			print_error(5, tab[cpt + 1]);
+			print_error(tab[cpt + 1], 5);
 			return (258);
 		}
 	}
@@ -49,7 +49,7 @@ int	check_syntax(char **tab)
 	cpt = -1;
 	if (get_type(tab[0]) == PIPE)
 	{
-		print_error(5, tab[0]);
+		print_error(tab[0], 5);
 		return (258);
 	}
 	while (tab[++cpt])

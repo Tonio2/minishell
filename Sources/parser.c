@@ -6,29 +6,182 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/10 01:32:15 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/10 01:51:07 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 02:18:33 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_parser(t_vars *v)
+t_cmd	fill_cmd(t_vars *v, int ic, int i)
+{
+	int	cpt;
+	int	i2;
+	int	i_av;
+
+	v->cmd[ic].redir_tab = malloc((v->nb_tkn + 1) * sizeof(t_token));
+	v->cmd[ic].av = malloc((v->nb_tkn + 1) * sizeof(char *));
+	cpt = 0;
+	i2 = 0;
+	i_av = 0;
+	while (v->tkn_tab[i + cpt].type && v->tkn_tab[i + cpt].type != PIPE)
+	{
+		if (v->tkn_tab[i + cpt].type != TXT)
+		{
+			v->cmd[ic].redir_tab[i2].type = v->tkn_tab[i + cpt].type;
+			v->cmd[ic].redir_tab[i2++].str = ft_strdup(v->tkn_tab[i + cpt].str);
+		}
+		else
+			v->cmd[ic].av[i_av++] = ft_strdup(v->tkn_tab[i + cpt].str);
+		cpt++;
+	}
+	v->cmd[ic].redir_tab[i2].type = END;
+	v->cmd[ic].av[i_av] = 0;
+	return (v->cmd[ic]);
+}
+
+char	**add_elem(char **av, char *str)
+{
+	char	**res;
+	int		i;
+
+	res = malloc((ft_tablen((void **)av) + 2) * sizeof(char *));
+	i = -1;
+	while (av[++i])
+	{
+		res[i] = ft_strdup(av[i]);
+		free(av[i]);
+	}
+	if (str)
+		res[i++] = ft_strdup(str);
+	res[i] = 0;
+	free(av);
+	return (res);
+}
+
+char	*get_next_string(char *str, int *i)
+{
+	char	q;
+	int		i_tmp;
+	char	*tmp;
+
+	tmp = malloc(ft_strlen(str) + 1);
+	i_tmp = 0;
+	q = 0;
+	while (str[*i] && (q != 0 || str[*i] != ' '))
+	{
+		if (str[*i] == '"' || str[*i] == '\'')
+		{
+			if (q && q != str[*i])
+				tmp[i_tmp++] = str[*i];
+			q = str[*i] * (q == 0) + q * (q != str[*i]);
+		}
+		else
+			tmp[i_tmp++] = str[*i];
+		(*i)++;
+	}
+	tmp[i_tmp] = 0;
+	return (tmp);
+}
+
+char	**divide(t_cmd cmd, t_vars *v)
+{
+	char	**res;
+	int		i_av;
+	int		i_str;
+	char	*tmp;
+
+	res = malloc(sizeof(char *));
+	res[0] = 0;
+	i_av = -1;
+	while (cmd.av[++i_av])
+	{
+		expand(&(cmd.av[i_av]), v);
+		i_str = 0;
+		while (cmd.av[i_av][i_str])
+		{
+			tmp = get_next_string(cmd.av[i_av], &i_str);
+			res = add_elem(res, tmp);
+			free(tmp);
+			while (cmd.av[i_av][i_str] == ' ')
+				i_str++;
+		}
+	}
+	free_tabstr(cmd.av);
+	return (res);
+}
+
+void	update_env(t_vars *v)
+{
+	int		i;
+	int		i_e;
+	char	*tmp;
+
+	v->e = malloc((v->tab_len + 1) * sizeof(char *));
+	i = -1;
+	i_e = 0;
+	while (++i < v->tab_len)
+	{
+		if (v->tab_env[i][1])
+		{
+			tmp = ft_strjoin(v->tab_env[i][0], "=");
+			v->e[i_e++] = ft_strjoin(tmp, v->tab_env[i][1]);
+			free(tmp);
+		}
+	}
+	v->e[i_e] = 0;
+}
+
+char	**get_cmd_path(t_vars *v, char *cmd)
+{
+	char	**ret;
+	int		cpt;
+	char	*tmp;
+
+	tmp = get_tabenv(v, "PATH");
+	ret = ft_split(tmp, ':');
+	free(tmp);
+	cpt = -1;
+	while (ret[++cpt])
+	{
+		tmp = ft_strjoin(ret[cpt], "/");
+		free(ret[cpt]);
+		ret[cpt] = ft_strjoin(tmp, cmd);
+		free(tmp);
+	}
+	return (ret);
+}
+
+/*
+Remplit v em fonction de tkn_tab au format demande par la fonction d'execution
+	nb_cmd = nb pipe + 1
+	Parcours chaque token et remplit la liste des redirection
+	et des av dans la commande associee
+	Expand chaque av
+	Dans chaque av, soustait les quotes et decoupe en fonction des ' ' unquoted
+	A partir de av[0], remplit les paths d'execution potentiels
+*/		
+void	parser(t_vars *v)
 {
 	int	i_cmd;
 	int	i_tkn;
 
 	v->nb_cmd = 1;
-	i_cmd = -1;
-	while (v->tkn_tab[++i_cmd].type)
-		if (v->tkn_tab[i_cmd].type == PIPE)
+	i_tkn = -1;
+	while (v->tkn_tab[++i_tkn].type)
+		if (v->tkn_tab[i_tkn].type == PIPE)
 			v->nb_cmd++;
+	v->nb_tkn = i_tkn;
 	v->cmd = malloc(v->nb_cmd * sizeof(t_cmd));
 	i_cmd = -1;
-	i_tkn = 0;
+	i_tkn = -1;
 	while (++i_cmd < v->nb_cmd)
 	{
-		v->cmd[i_cmd] = ft_parse_token(v->tkn_tab, &i_tkn);
+		v->cmd[i_cmd] = fill_cmd(v, i_cmd, ++i_tkn);
+		v->cmd[i_cmd].av = divide(v->cmd[i_cmd], v);
 		if (v->cmd[i_cmd].av[0])
 			v->cmd[i_cmd].path = get_cmd_path(v, v->cmd[i_cmd].av[0]);
+		while (v->tkn_tab[i_tkn].type && v->tkn_tab[i_tkn].type != PIPE)
+			i_tkn++;
 	}
+	update_env(v);
 }

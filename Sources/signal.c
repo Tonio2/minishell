@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 00:05:44 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/09 00:08:01 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 02:43:04 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,21 @@ void	sigint_handler(int code)
 	{
 		close(0);
 		g_sig.status = 1;
+		g_sig.interrupt_hd = 1;
 		g_sig.exit_code = 1;
 	}
 }
 
 void	sigquit_handler(int code)
 {
-	if (code == SIGQUIT && !g_sig.status)
+	(void)code;
+	if (!g_sig.status || g_sig.status == 2)
 	{
 		printf("%c[2K", 27);
 		rl_on_new_line();
 		rl_redisplay();
 	}
-	else if (g_sig.status == 2)
-	{
-		close(0);
-		g_sig.status = 1;
-	}
-	else if (code == SIGQUIT)
+	else if (g_sig.status == 1)
 	{
 		g_sig.exit_code = 131;
 		printf("Quit: 3\n");

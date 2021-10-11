@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 23:08:23 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/10 01:45:07 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 02:37:21 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,33 @@ void	exec_binary(t_cmd cmd, char **e)
 	exit(127);
 }
 
-int	exec_pipeline(t_vars *v)
+int	get_exit_code(t_vars *v)
 {
 	int	cpt;
 
 	cpt = -1;
 	while (++cpt < v->nb_cmd)
+		waitpid(v->cmd[cpt].pid, &(v->cmd[cpt].exit_code), 0);
+	if (g_sig.exit_code == 130)
+		return (130);
+	if (g_sig.exit_code == 131)
+		return (131);
+	return (WEXITSTATUS(v->cmd[cpt - 1].exit_code));
+}
+
+int	exec_pipeline(t_vars *v)
+{
+	int	cpt;
+	int	ret;
+
+	cpt = -1;
+	while (++cpt < v->nb_cmd)
 	{
-		echo_control_seq(0);
-		if (v->cmd[cpt + 1])
+		if (cpt < v->nb_cmd - 1)
 			pipe(v->cmd[cpt].pipefd);
 		v->cmd[cpt].pid = fork();
+		if (v->cmd[cpt].pid == -1)
+			exit(128);
 		if (!v->cmd[cpt].pid)
 		{
 			dup_pipes(v, cpt);
@@ -79,17 +95,14 @@ int	exec_pipeline(t_vars *v)
 		}
 		close_pipes(v, cpt);
 	}
-	cpt = -1;
-	while (++cpt < v->nb_cmd)
-		waitpid(v->cmd[cpt].pid, &(v->cmd[cpt].exit_code), 0);
-	return (v->cmd[cpt - 1].exit_code & 0xff);
+	return (get_exit_code(v));
 }
 
 int	exec(t_vars *v)
 {
 	int	ret;
 
-	if (v->cmd[1] == 0 && is_builtin(v->cmd[0].av[0]))
+	if (v->nb_cmd == 1 && is_builtin(v->cmd[0].av[0]))
 	{
 		ret = redir(v->cmd[0].redir_tab);
 		if (ret)
