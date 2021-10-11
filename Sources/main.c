@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:14:35 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/11 17:13:32 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 19:11:49 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,14 @@ int	launch2(t_vars *v)
 	ret = tokenize(v);
 	free_tabstr(v->word_tab);
 	dup2(v->in_cpy, STDIN_FILENO);
-	if (g_sig.interrupt_hd == 1)
-		return (1);
-	if (ret)
-		return (ret);
+	if (g_sig.interrupt_hd == 1 || ret)
+	{
+		free_tkns(v->tkn_tab);
+		if (g_sig.interrupt_hd == 1)
+			return (1);
+		if (ret)
+			return (ret);
+	}
 	parser(v);
 	free_tkns(v->tkn_tab);
 	ret = exec(v);
@@ -88,7 +92,10 @@ int	launch(t_vars *v, char *line)
 	ret = lexer(v, line);
 	free(line);
 	if (ret)
+	{
+		free_tabstr(v->word_tab);
 		return (ret);
+	}
 	return (launch2(v));
 }
 
