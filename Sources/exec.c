@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 23:08:23 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/11 14:16:33 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 17:12:44 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,20 +54,6 @@ void	exec_binary(t_cmd cmd, char **e)
 	}
 	print_error(cmd.av[0], 0);
 	exit(127);
-}
-
-int	get_exit_code(t_vars *v)
-{
-	int	cpt;
-
-	cpt = -1;
-	while (++cpt < v->nb_cmd)
-		waitpid(v->cmd[cpt].pid, &(v->cmd[cpt].exit_code), 0);
-	if (g_sig.exit_code == 130)
-		return (130);
-	if (g_sig.exit_code == 131)
-		return (131);
-	return (WEXITSTATUS(v->cmd[cpt - 1].exit_code));
 }
 
 int	exec_pipeline(t_vars *v)

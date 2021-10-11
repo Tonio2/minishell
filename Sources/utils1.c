@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 23:40:21 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/10 00:58:31 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 17:13:24 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,27 @@ char	*get_tabenv(t_vars *v, char *key)
 	value = malloc(1);
 	value[0] = 0;
 	return (value);
+}
+
+void	clear(void)
+{
+	int		cpt;
+	char	*tmp;
+	char	*tmp2;
+
+	cpt = 0;
+	tmp = ft_itoa(cpt);
+	tmp2 = ft_strjoin(".tmp", tmp);
+	while (!access(tmp2, F_OK))
+	{
+		unlink(tmp2);
+		free(tmp);
+		free(tmp2);
+		cpt++;
+		tmp = ft_itoa(cpt);
+		tmp2 = ft_strjoin(".tmp", tmp);
+	}
+	free(tmp);
+	free(tmp2);
+	g_sig.interrupt_hd = 0;
 }

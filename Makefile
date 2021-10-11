@@ -6,7 +6,7 @@
 #    By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/09/25 13:56:27 by mboy              #+#    #+#              #
-#    Updated: 2021/10/10 19:06:39 by alabalet         ###   ########.fr        #
+#    Updated: 2021/10/11 17:13:50 by alabalet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,11 +29,13 @@ SRCS_C	=	builtin.c\
 			builtin_unset.c\
 			error.c\
 			exec.c\
+			exec2.c\
 			expanser.c\
 			free.c\
 			lexer.c\
 			main.c\
 			parser.c\
+			parser2.c\
 			redir.c\
 			signal.c\
 			syntax.c\

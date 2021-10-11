@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 22:36:16 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/11 14:02:01 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 17:12:56 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,4 +161,7 @@ int			is_true_builtin(char *str);
 char		**get_cmd_path(t_vars *v, char *cmd);
 
 int			join_export(t_vars *v, char *param, int select);
+t_cmd		fill_cmd(t_vars *v, int ic, int i);
+char		**add_elem(char **av, char *str);
+int			get_exit_code(t_vars *v);
 #endif

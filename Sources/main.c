@@ -6,34 +6,11 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:14:35 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/11 14:10:39 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 17:13:32 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	clear(void)
-{
-	int		cpt;
-	char	*tmp;
-	char	*tmp2;
-
-	cpt = 0;
-	tmp = ft_itoa(cpt);
-	tmp2 = ft_strjoin(".tmp", tmp);
-	while (!access(tmp2, F_OK))
-	{
-		unlink(tmp2);
-		free(tmp);
-		free(tmp2);
-		cpt++;
-		tmp = ft_itoa(cpt);
-		tmp2 = ft_strjoin(".tmp", tmp);
-	}
-	free(tmp);
-	free(tmp2);
-	g_sig.interrupt_hd = 0;
-}
 
 void	init_vars(t_vars *v, char **e)
 {
