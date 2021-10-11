@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 23:08:23 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/11 02:37:21 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 14:16:33 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ int	exec(t_vars *v)
 {
 	int	ret;
 
+	if (!v->cmd[0].av[0])
+		return (0);
 	if (v->nb_cmd == 1 && is_builtin(v->cmd[0].av[0]))
 	{
 		ret = redir(v->cmd[0].redir_tab);

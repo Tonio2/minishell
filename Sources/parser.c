@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/10 01:32:15 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/11 02:18:33 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 14:24:29 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,12 @@ char	**get_cmd_path(t_vars *v, char *cmd)
 	int		cpt;
 	char	*tmp;
 
+	if (!cmd)
+	{
+		ret = malloc(sizeof(char *));
+		ret[0] = 0;
+		return (ret);
+	}
 	tmp = get_tabenv(v, "PATH");
 	ret = ft_split(tmp, ':');
 	free(tmp);
@@ -178,8 +184,7 @@ void	parser(t_vars *v)
 	{
 		v->cmd[i_cmd] = fill_cmd(v, i_cmd, ++i_tkn);
 		v->cmd[i_cmd].av = divide(v->cmd[i_cmd], v);
-		if (v->cmd[i_cmd].av[0])
-			v->cmd[i_cmd].path = get_cmd_path(v, v->cmd[i_cmd].av[0]);
+		v->cmd[i_cmd].path = get_cmd_path(v, v->cmd[i_cmd].av[0]);
 		while (v->tkn_tab[i_tkn].type && v->tkn_tab[i_tkn].type != PIPE)
 			i_tkn++;
 	}

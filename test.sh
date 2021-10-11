@@ -22,7 +22,7 @@ function exec_test()
 {
 	TEST1=$(echo $1 | ./minishell 2>&- $2)
 	ES_1=$?
-	TEST1=$(echo $TEST1 | grep -v "minishell> ")
+	TEST1=$(echo $TEST1 | grep -v "minishell> " | grep -v "♥‿♥")
 	TEST2=$(echo $1 | bash 2>&-)
 	ES_2=$?
 	if [ "$TEST1" = "$TEST2" ] && [ "$ES_1" = "$ES_2" ]; then
@@ -100,7 +100,7 @@ exec_test "export TES=T=\"\" \n$ENV_SHOW" 2
 exec_test "export TE+S=T=\"\" \n$ENV_SHOW" 2
 exec_test "export TEST=LOL \n echo \$TEST \n$ENV_SHOW" 3
 exec_test 'export TEST=LOL \n echo $TEST$TEST$TEST=lol$TEST' 2
-# exec_test "export TEST=LOL\n export TEST+=LOL \n echo \$TEST \n$ENV_SHOW" 4
+exec_test "export TEST=LOL\n export TEST+=LOL \n echo \$TEST \n$ENV_SHOW" 4
 exec_test $ENV_SHOW 1
 exec_test $EXPORT_SHOW 1
 exec_test "export TEST=\"ls       -l     - a\" \n echo $TEST \n $LS \n$ENV_SHOW" 4

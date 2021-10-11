@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 22:36:16 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/11 02:27:26 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/11 14:02:01 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 # include "libft.h"
 # include <termios.h>
 # include <sys/ioctl.h>
+# include <limits.h>
 
 typedef struct s_token
 {
@@ -158,4 +159,6 @@ void		exec_solo_built(t_vars *v);
 void		fill_heredoc(t_vars *v, t_cmd c);
 int			is_true_builtin(char *str);
 char		**get_cmd_path(t_vars *v, char *cmd);
+
+int			join_export(t_vars *v, char *param, int select);
 #endif
