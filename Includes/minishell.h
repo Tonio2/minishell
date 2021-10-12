@@ -164,4 +164,5 @@ int			join_export(t_vars *v, char *param, int select);
 t_cmd		fill_cmd(t_vars *v, int ic, int i);
 char		**add_elem(char **av, char *str);
 int			get_exit_code(t_vars *v);
+void		atomic_exec(t_vars *v, int cpt);
 #endif

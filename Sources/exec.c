@@ -75,14 +75,7 @@ int	exec_pipeline(t_vars *v)
 			ret = redir(v->cmd[cpt].redir_tab);
 			if (ret)
 				exit(ret);
-			if(v->cmd[cpt].av[0])
-			{
-				if (is_builtin(v->cmd[cpt].av[0]))
-					exit(builtin(v, cpt));
-				exec_binary(v->cmd[cpt], v->e);
-			}
-			else
-				exit(0);
+			atomic_exec(v, cpt);
 		}
 		close_pipes(v, cpt);
 	}

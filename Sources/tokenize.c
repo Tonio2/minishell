@@ -42,29 +42,28 @@ void	heredoc(t_token *tkn, int i)
 
 int	substract_quotes(char **str)
 {
-	int		i_str;
+	int		i[2];
 	char	q;
 	char	*result;
-	int		i_res;
 
-	i_str = -1;
-	i_res = 0;
+	i[1] = -1;
+	i[0] = 0;
 	q = 0;
 	result = malloc(ft_strlen(*str));
-	while ((*str)[++i_str])
+	while ((*str)[++i[1]])
 	{
-		if ((*str)[i_str] == '\'' || (*str)[i_str] == '"')
+		if ((*str)[i[1]] == '\'' || (*str)[i[1]] == '"')
 		{
-			if (q && q != (*str)[i_str])
-				result[i_res++] = (*str)[i_str];
-			q = (*str)[i_str] * (q == 0) + q * (q != (*str)[i_str]);
+			if (q && q != (*str)[i[1]])
+				result[i[0]++] = (*str)[i[1]];
+			q = (*str)[i[1]] * (q == 0) + q * (q != (*str)[i[1]]);
 		}
 		else
-			result[i_res++] = (*str)[i_str];
-		if (q == 0 && (*str)[i_str] == ' ')
+			result[i[0]++] = (*str)[i[1]];
+		if (q == 0 && (*str)[i[1]] == ' ')
 			return (1);
 	}
-	result[i_res] = 0;
+	result[i[0]] = 0;
 	free(*str);
 	*str = result;
 	return (0);

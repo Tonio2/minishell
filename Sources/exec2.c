@@ -12,6 +12,18 @@
 
 #include "minishell.h"
 
+void	atomic_exec(t_vars *v, int cpt)
+{
+	if (v->cmd[cpt].av[0])
+	{
+		if (is_builtin(v->cmd[cpt].av[0]))
+			exit(builtin(v, cpt));
+		exec_binary(v->cmd[cpt], v->e);
+	}
+	else
+		exit(0);
+}
+
 int	get_exit_code(t_vars *v)
 {
 	int	cpt;
