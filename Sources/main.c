@@ -6,7 +6,7 @@
 /*   By: alabalet <alabalet@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 17:14:35 by alabalet          #+#    #+#             */
-/*   Updated: 2021/10/11 19:11:49 by alabalet         ###   ########.fr       */
+/*   Updated: 2021/10/12 14:00:46 by alabalet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,36 +126,3 @@ int	main(int ac, char **av, char **e)
 	}
 	return (g_sig.exit_code);
 }
-
-/*
-Main pour lancer le tester
-*/
-
-// int	main(int ac, char **av, char **e)
-// {
-// 	t_vars	v;
-// 	char	*line;
-// 	int		cpt;
-
-// 	(void)av;
-// 	cpt = -1;
-// 	if (ac != 2)
-// 	{
-// 		print_error("Usage : ./minishell nb_cmd", 3);
-// 		return (1);
-// 	}
-// 	signal(SIGINT, sigint_handler);
-// 	signal(SIGQUIT, sigquit_handler);
-// 	init_vars(&v, e);
-// 	while (++cpt < ft_atoi(av[1]))
-// 	{
-// 		echo_control_seq(0);
-// 		dup2(v.in_cpy, STDIN_FILENO);
-// 		dup2(v.out_cpy, STDOUT_FILENO);
-// 		g_sig.status = 0;
-// 		line = readline("minishell> ");
-// 		g_sig.status = 1;
-// 		g_sig.exit_code = launch(&v, line);
-// 	}
-// 	return (g_sig.exit_code);
-// }
